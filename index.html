@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>导航姬</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@300;400;600;900&family=ZCOOL+XiaoWei&family=Noto+Sans+SC:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="https://img.icons8.com/?size=160&id=uUcxc_qe4Vlp&format=png" type="image/png">
+
+    
+    <style>
+        :root {
+            --bg-paper: #fdfbf7;
+            --ink-primary: #2b2b2b;
+            --ink-secondary: #5a5a5a;
+            --seal-red: #a93226;
+            --highlight-gold: #d4ac6e;
+            --border-color: #e5e0d8;
+        }
+
+        body {
+            background-color: var(--bg-paper);
+            color: var(--ink-primary);
+            font-family: 'Noto Serif SC', serif;
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+        }
+
+        .font-seal { font-family: 'Ma Shan Zheng', cursive; }
+        .font-caption { font-family: 'ZCOOL XiaoWei', serif; }
+
+        .nav-item.active {
+            border-left: 4px solid var(--seal-red);
+            background-color: rgba(169, 50, 38, 0.05);
+            font-weight: bold;
+            color: var(--seal-red);
+        }
+
+        .cite {
+            font-size: 0.7em;
+            color: #999;
+            vertical-align: super;
+            cursor: help;
+            margin-left: 2px;
+        }
+
+        .stamp {
+            border: 2px solid var(--seal-red);
+            color: var(--seal-red);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Ma Shan Zheng', cursive;
+            display: inline-block;
+            transform: rotate(-3deg);
+            font-size: 0.9em;
+        }
+
+        .case-card {
+            background: white;
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        .case-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--ink-secondary);
+            transition: all 0.3s ease;
+        }
+        .case-card:hover {
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+            transform: translateY(-2px);
+        }
+        .case-card:hover::before {
+            background: var(--seal-red);
+        }
+
+        .color-block {
+            width: 135px;
+            height: 135px;
+            border-radius: 16px;
+            border: 2px solid #9c9c9c;
+            box-shadow: 4px 4px 0 rgba(0,0,0,0.12);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            text-decoration: none;
+            color: white;
+            padding: 14px 10px;
+        }
+        .color-block:hover {
+            transform: translateY(-6px) scale(1.04);
+            box-shadow: 8px 8px 0 rgba(0,0,0,0.18);
+            z-index: 2;
+        }
+        .block-title-text {
+            font-family: 'Ma Shan Zheng', cursive;
+            font-size: 1.5rem;
+            color: #2c3e50;
+            letter-spacing: 2px;
+            text-align: center;
+            line-height: 1.2;
+            margin-top: 8px;
+            text-shadow: 0 0 12px rgba(255,255,255,0.8), 1px 1px 2px rgba(0,0,0,0.15);
+        }
+        .block-desc-text {
+            font-family: 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #111;
+            text-align: center;
+            line-height: 1.3;
+            background: #fff;
+            padding: 8px 10px;
+            border-radius: 10px;
+            box-shadow: 2px 2px 0 rgba(0,0,0,0.15);
+            width: 90%;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* 一次只显示一个目录对应页面 */
+        .panel-section {
+            display: none;
+            min-height: 100%;
+        }
+        .panel-section.active {
+            display: block;
+        }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden">
+
+    <aside class="w-64 flex-shrink-0 border-r border-[#dcd6cc] bg-[#fdfbf7] flex flex-col z-20 shadow-lg hidden md:flex">
+        <div class="p-8 border-b border-[#dcd6cc]">
+            <h1 class="text-4xl font-seal text-red-900 mb-2">导航姬</h1>
+            <p class="text-xs text-gray-500 tracking-widest uppercase">Curated Links</p>
+        </div>
+        <nav class="flex-1 overflow-y-auto py-6" id="sidebar-nav">
+            <a href="#llm-base" class="nav-item active block px-6 py-3 text-[17px] text-gray-600 hover:bg-[#f3f0e9] transition">壹 · 大模型和API</a>
+            <a href="#image-gen" class="nav-item block px-6 py-4 text-[17px] text-gray-600 hover:bg-[#f3f0e9] transition">贰 · 造梦绘图</a>
+            <a href="#text-edit" class="nav-item block px-6 py-3 text-[17px] text-gray-600 hover:bg-[#f3f0e9] transition">叁 · 文字工坊</a>
+            <a href="#video-gen" class="nav-item block px-6 py-4 text-[17px] text-gray-600 hover:bg-[#f3f0e9] transition">肆 · 影像智造</a>
+            <a href="#scene-studio" class="nav-item block px-6 py-4 text-[17px] text-gray-600 hover:bg-[#f3f0e9] transition">伍 · 遇见片场</a>
+            <a href="#audio-time" class="nav-item block px-6 py-4 text-[17px] text-gray-600 hover:bg-[#f3f0e9] transition">陆 · 耳畔时光</a>
+            <a href="#book-garden" class="nav-item block px-6 py-4 text-[17px] text-gray-600 hover:bg-[#f3f0e9] transition">柒 · 墨香书阁</a>
+            <a href="#vibe-coding" class="nav-item block px-6 py-3 text-[17px] text-gray-600 hover:bg-[#f3f0e9] transition">捌 · Vibe Coding</a>
+        </nav>
+    </aside>
+
+    <main class="flex-1 overflow-y-auto relative" id="main-content">
+
+        <section id="llm-base" class="panel-section active py-16 px-6 md:px-20">
+            <div class="max-w-5xl mx-auto">
+                <h3 class="text-3xl font-bold mb-3 text-red-900 font-seal">壹 · 大模型和API</h3>
+                <h4 class="text-xl text-gray-600 mb-12 border-b pb-4">主流对话与检索能力</h4>
+                <div class="blocks-container flex flex-wrap justify-center gap-8" data-section="llm-base"></div>
+            </div>
+        </section>
+
+        <section id="image-gen" class="panel-section py-16 px-6 md:px-20">
+            <div class="max-w-5xl mx-auto">
+                <h3 class="text-3xl font-bold mb-3 text-red-900 font-seal">贰 · 造梦绘图</h3>
+                <h4 class="text-xl text-gray-600 mb-12 border-b pb-4">图像生成与处理工具</h4>
+                <div class="blocks-container flex flex-wrap justify-center gap-8" data-section="image-gen"></div>
+            </div>
+        </section>
+
+        <section id="text-edit" class="panel-section py-16 px-6 md:px-20">
+            <div class="max-w-5xl mx-auto">
+                <h3 class="text-3xl font-bold mb-3 text-red-900 font-seal">叁 · 文字工坊</h3>
+                <h4 class="text-xl text-gray-600 mb-12 border-b pb-4">书写、笔记与文字效率</h4>
+                <div class="blocks-container flex flex-wrap justify-center gap-8" data-section="text-edit"></div>
+            </div>
+        </section>
+
+        <section id="video-gen" class="panel-section py-16 px-6 md:px-20">
+            <div class="max-w-5xl mx-auto">
+                <h3 class="text-3xl font-bold mb-3 text-red-900 font-seal">肆 · 影像智造</h3>
+                <h4 class="text-xl text-gray-600 mb-12 border-b pb-4">视频生成与动图工具</h4>
+                <div class="blocks-container flex flex-wrap justify-center gap-8" data-section="video-gen"></div>
+            </div>
+        </section>
+
+        <section id="scene-studio" class="panel-section py-16 px-6 md:px-20">
+            <div class="max-w-5xl mx-auto">
+                <h3 class="text-3xl font-bold mb-3 text-red-900 font-seal">伍 · 遇见片场</h3>
+                <h4 class="text-xl text-gray-600 mb-12 border-b pb-4">影视、引擎与频道合集</h4>
+                <div class="blocks-container flex flex-wrap justify-center gap-8" data-section="scene-studio"></div>
+            </div>
+        </section>
+
+        <section id="audio-time" class="panel-section py-16 px-6 md:px-20">
+            <div class="max-w-5xl mx-auto">
+                <h3 class="text-3xl font-bold mb-3 text-red-900 font-seal">陆 · 耳畔时光</h3>
+                <h4 class="text-xl text-gray-600 mb-12 border-b pb-4">播客、音乐与语音合成</h4>
+                <div class="blocks-container flex flex-wrap justify-center gap-8" data-section="audio-time"></div>
+            </div>
+        </section>
+
+        <section id="book-garden" class="panel-section py-16 px-6 md:px-20">
+            <div class="max-w-5xl mx-auto">
+                <h3 class="text-3xl font-bold mb-3 text-red-900 font-seal">柒 · 墨香书阁</h3>
+                <h4 class="text-xl text-gray-600 mb-12 border-b pb-4">阅读与知识社区</h4>
+                <div class="blocks-container flex flex-wrap justify-center gap-8" data-section="book-garden"></div>
+            </div>
+        </section>
+
+        <section id="vibe-coding" class="panel-section py-16 px-6 md:px-20">
+            <div class="max-w-5xl mx-auto">
+                <h3 class="text-3xl font-bold mb-3 text-red-900 font-seal">捌 · Vibe Coding</h3>
+                <h4 class="text-xl text-gray-600 mb-12 border-b pb-4">云上笔记、实用网站应有尽有</h4>
+                <div class="blocks-container flex flex-wrap justify-center gap-8" data-section="vibe-coding"></div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        const llmBaseConfig = [
+            { color: "#FFB7B2", link: "https://www.doubao.com/chat/", text: "豆包", desc: "" },
+            { color: "#FFDAC1", link: "https://www.deepseek.com/", text: "DeepSeek", desc: "" },
+            { color: "#E2F0CB", link: "https://www.qianwen.com/", text: "千问", desc: "阿里开源全能型模型" },
+            { color: "#B5EAD7", link: "https://yiyan.baidu.com/", text: "文心一言", desc: "" },
+            { color: "#C7CEEA", link: "https://yuanbao.tencent.com/chat/naQivTmsDa", text: "元宝", desc: "" },
+            { color: "#F6EAC2", link: "https://www.kimi.com/", text: "KIMI", desc: "" },
+            { color: "#E0BBE4", link: "https://www.zhipuai.cn/", text: "Z.AI", desc: "代码生成与应用开发" },
+            { color: "#C8E6C9", link: "https://chatglm.cn/main/alltoolsdetail?lang=zh", text: "智谱清言", desc: "日常对话与生活办公" },
+            { color: "#FF9AA2", link: "https://app.tavily.com/home", text: "Tavily", desc: "实时抓取网络信息" }
+        ];
+
+        const imageBlockConfig = [
+            { color: "#B5EAD7", link: "https://www.koukoutu.com/removebgtool/all", text: "抠抠图", desc: "一键智能抠图" },
+            { color: "#C8E6C9", link: "https://imgchr.com/", text: "路过图床", desc: "图片上传和外链服务" },
+            { color: "#FFB7B2", link: "https://www.lovart.art/?xingliuMigration=1&utm_source=xingliu", text: "Lovart", desc: "将图片分解为图层" },
+            { color: "#FFDAC1", link: "https://www.midjourney.com/", text: "MJ", desc: "艺术感最强的绘图 AI" },
+            { color: "#E2F0CB", link: "https://stability.ai/", text: "SD", desc: "开源可控的专业绘图" }
+        ];
+
+        const textBlockConfig = [
+            { color: "#FFB7B2", link: "https://www.autohanding.com/", text: "凹凸工坊", desc: "手写模拟器" },
+            { color: "#FFDAC1", link: "https://tibiji.com/Allpassword", text: "提笔记", desc: "Liyanm88" },
+            { color: "#E2F0CB", link: "https://tibiji.com/lanke", text: "提笔记", desc: " 820820" },
+            { color: "#B5EAD7", link: "https://5331bc07-0a78-4fdf-9b96-cbb512308fed.wangye.domolo.cn/p/jywry?rand=1792041047312", text: "云笺记", desc: "820820" },
+            { color: "#C7CEEA", link: "", text: "", desc: "" }
+        ];
+
+        const videoBlockConfig = [
+            { color: "#FFB7B2", link: "https://runwayml.com/", text: "Runway", desc: "视频生成与编辑神器" },
+            { color: "#FFDAC1", link: "https://pika.art/", text: "Pika", desc: "简单有趣的动画生成" },
+            { color: "#E2F0CB", link: "https://klingai.com/", text: "可灵", desc: "快手出品的高清视频 AI" },
+            { color: "#B5EAD7", link: "https://luma.ai/", text: "Luma", desc: "逼真的 3D 与视频生成" },
+            { color: "#C7CEEA", link: "https://jimeng.jianying.com/ai-tool/home", text: "即梦", desc: "" },
+            { color: "#F6EAC2", link: "https://www.gif996.com/", text: "gif996", desc: "高清GIF动图 一键生成" }
+        ];
+
+        const sceneBlockConfig = [
+            { color: "#a5e5ff", link: "https://www.bilibili.com/", text: "哔哩哔哩", desc: "" },
+            { color: "#C7CEEA", link: "https://vidhub.tv/", text: "VidHub" },
+            { color: "#c9bff0", link: "https://www.nfyingshi.com/movie_bt_series/jilupian", text: "奈菲影视", desc: "" },
+            { color: "#FF9AA2", link: "https://www.cctv.com/", text: "央视网", desc: "" },
+            { color: "#beeef0", link: "https://www.ncat21.com/", text: "网飞猫", desc: "" },
+            { color: "#bef0d2", link: "https://www.omofuna.com/", text: "Omofun动漫", desc: "" },
+            { color: "#eeebab", link: "", text: "", desc: "" },
+            { color: "#FFB7B2", link: "https://www.unrealengine.com/", text: "UE5", desc: "电影级实时 3D 引擎" },
+            { color: "#FFDAC1", link: "https://unity.com/", text: "Unity", desc: "跨平台游戏开发引擎" },
+            { color: "#E2F0CB", link: "https://lumalabs.ai/dream-machine", text: "Luma", desc: "快速 3D 场景建模" },
+            { color: "#B5EAD7", link: "https://masterpiecestudio.com/", text: "MP", desc: "VR 环境下的 3D 创作" },
+            { color: "#F6EAC2", link: "", text: "", desc: "" },
+            
+        ];
+
+        const audioBlockConfig = [
+            { color: "#C7CEEA", link: "https://podcasts.apple.com/cn/home", text: "播客", desc: "" },
+            { color: "#F6EAC2", link: "https://www.missevan.com/", text: "猫耳FM", desc: "" },
+            { color: "#FF9AA2", link: "https://www.gequbao.com/", text: "歌曲宝", desc: "" },
+            { color: "#FFB7B2", link: "https://suno.com/", text: "Suno", desc: "一键生成完整歌曲" },
+            { color: "#FFDAC1", link: "https://udio.com/", text: "Udio", desc: "高保真音乐创作 AI" },
+            { color: "#E2F0CB", link: "https://elevenlabs.io/", text: "Eleven", desc: "超逼真语音克隆合成" },
+            { color: "#B5EAD7", link: "https://ace-studio.timedomain.tech/", text: "ACE", desc: "高质量歌声合成引擎" }
+        ];
+
+        const bookBlockConfig = [
+            { color: "#F6EAC2", link: "http://z-lib.rest", text: "Z-Library", desc: "" },
+            { color: "#FFB7B2", link: "https://weread.qq.com/", text: "微信读书", desc: "社交化阅读平台" },
+            { color: "#FFDAC1", link: "https://www.zhihu.com/", text: "知乎", desc: "专业知识问答社区" },
+            { color: "#E2F0CB", link: "https://book.qidian.com/", text: "起点", desc: "原创网络文学基地" },
+            { color: "#B5EAD7", link: "https://www.douban.com/", text: "豆瓣", desc: "书籍影评与生活指南" },
+            { color: "#C7CEEA", link: "https://chaoskeh.com/", text: "少数派", desc: "高效数字生活推荐" }
+        ];
+
+        const vibeBlockConfig = [
+            { color: "#a5e5ff", link: "https://dmoonshine666.github.io/yunjianji/page2.html", text: "云笺记", desc: "820820" },
+            { color: "#FFDAC1", link: "https://dmoonshine666.github.io/shudong/", text: "树洞", desc: "" },
+            { color: "#E2F0CB", link: "https://dmoonshine666.github.io/achievement/", text: "成就笔记", desc: "" },
+            { color: "#FFB7B2", link: "https://dmoonshine666.github.io/grocery/", text: "日记墙", desc: "记录一点点心情" },
+            { color: "#a5e5ff", link: "https://dmoonshine666.github.io/grocery/page5.html", text: "生活小报", desc: "" },
+            { color: "#FFDAC1", link: "https://dmoonshine666.github.io/grocery/page4.html", text: "作者生平介绍", desc: "" },
+
+            { color: "#E2F0CB", link: "https://dmoonshine666.github.io/grocery/page3.html", text: "表白墙", desc: "" },
+            { color: "#E2F0CB", link: "https://dmoonshine666.github.io/grocery/page2.html", text: "水印添加工具", desc: "" },
+            { color: "#C7CEEA", link: "https://dmoonshine666.github.io/yuwen/", text: "语文智典", desc: "" },
+            { color: "#B5EAD7", link: "https://dmoonshine666.github.io/poems/", text: "古诗词抽背系统", desc: "" },
+            { color: "#FFDAC1", link: "https://dmoonshine666.github.io/TV-online/page2.html", text: "电视导航", desc: "" },
+            { color: "#FFDAC1", link: "https://dmoonshine666.github.io/TV-online/", text: "网络电视频道", desc: "" },
+        ];
+
+        const contentData = {
+            "llm-base": llmBaseConfig,
+            "image-gen": imageBlockConfig,
+            "text-edit": textBlockConfig,
+            "video-gen": videoBlockConfig,
+            "scene-studio": sceneBlockConfig,
+            "audio-time": audioBlockConfig,
+            "book-garden": bookBlockConfig,
+            "vibe-coding":vibeBlockConfig
+        };
+
+        function createBlocksHTML(configList) {
+            return configList
+                .filter(b => b.text && b.link && b.link !== "#")
+                .map(block => {
+                    const descHTML = block.desc && block.desc.trim()
+                        ? `<span class="block-desc-text">${block.desc}</span>`
+                        : '';
+                    return `
+                        <a href="${block.link}" target="_blank" rel="noopener noreferrer" class="color-block" style="background:${block.color};" title="点击访问 ${block.text}">
+                            <span class="block-title-text">${block.text}</span>
+                            ${descHTML}
+                        </a>
+                    `;
+                })
+                .join('');
+        }
+
+        document.querySelectorAll('[data-section]').forEach(el => {
+            const key = el.getAttribute('data-section');
+            el.innerHTML = createBlocksHTML(contentData[key] || []);
+        });
+
+        const navItems = document.querySelectorAll('.nav-item');
+        const mainContent = document.getElementById('main-content');
+        const sections = document.querySelectorAll('.panel-section');
+
+        function showSection(targetId) {
+            sections.forEach(section => {
+                section.classList.toggle('active', section.id === targetId);
+            });
+            navItems.forEach(item => {
+                item.classList.toggle('active', item.getAttribute('href') === `#${targetId}`);
+            });
+            mainContent.scrollTop = 0;
+        }
+
+        navItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = item.getAttribute('href').slice(1);
+                showSection(targetId);
+            });
+        });
+    </script>
+</body>
+</html>
