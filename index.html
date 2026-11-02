@@ -157,6 +157,8 @@
             <a href="#audio-time" class="nav-item block px-6 py-4 text-[17px] text-gray-600 hover:bg-[#f3f0e9] transition">陆 · 耳畔时光</a>
             <a href="#book-garden" class="nav-item block px-6 py-4 text-[17px] text-gray-600 hover:bg-[#f3f0e9] transition">柒 · 墨香书阁</a>
             <a href="#vibe-coding" class="nav-item block px-6 py-3 text-[17px] text-gray-600 hover:bg-[#f3f0e9] transition">捌 · Vibe Coding</a>
+            <a href="#recommen-dation" class="nav-item block px-6 py-3 text-[17px] text-gray-600 hover:bg-[#f3f0e9] transition">玖 · recommendation</a>
+
         </nav>
     </aside>
 
@@ -226,6 +228,14 @@
             </div>
         </section>
 
+        <section id="recommen-dation" class="panel-section py-16 px-6 md:px-20">
+            <div class="max-w-5xl mx-auto">
+                <h3 class="text-3xl font-bold mb-3 text-red-900 font-seal">玖 · r e c o m m e n d a t i o n</h3>
+                <h4 class="text-xl text-gray-600 mb-12 border-b pb-4">实测好用的skill</h4>
+                <div class="blocks-container flex flex-wrap justify-center gap-8" data-section="recommen-dation"></div>
+            </div>
+        </section>
+
     </main>
 
     <script>
@@ -236,9 +246,13 @@
             { color: "#B5EAD7", link: "https://yiyan.baidu.com/", text: "文心一言", desc: "" },
             { color: "#C7CEEA", link: "https://yuanbao.tencent.com/chat/naQivTmsDa", text: "元宝", desc: "" },
             { color: "#F6EAC2", link: "https://www.kimi.com/", text: "KIMI", desc: "" },
-            { color: "#E0BBE4", link: "https://www.zhipuai.cn/", text: "Z.AI", desc: "代码生成与应用开发" },
+            { color: "#E0BBE4", link: "https://zchat.z.ai/", text: "Zcode", desc: "代码生成与应用开发" },
             { color: "#C8E6C9", link: "https://chatglm.cn/main/alltoolsdetail?lang=zh", text: "智谱清言", desc: "日常对话与生活办公" },
-            { color: "#FF9AA2", link: "https://app.tavily.com/home", text: "Tavily", desc: "实时抓取网络信息" }
+            { color: "#FF9AA2", link: "https://app.tavily.com/home", text: "Tavily", desc: "实时抓取网络信息" },
+            { color: "#bdeef6", link: "https://pan.baidu.com/disk/home?from=newversion&stayAtHome=true#/all?path=%2F&vmode=list", text: "百度网盘", desc: "" },
+            { color: "#f6d39f", link: "https://wx.mail.qq.com/home/index?sid=zaxUVYxdNGEucmhiAJRBYgAA#/list/1", text: "QQ邮箱", desc: "" },
+
+
         ];
 
         const imageBlockConfig = [
@@ -273,9 +287,10 @@
             { color: "#C7CEEA", link: "https://vidhub.tv/", text: "VidHub" },
             { color: "#c9bff0", link: "https://www.nfyingshi.com/movie_bt_series/jilupian", text: "奈菲影视", desc: "" },
             { color: "#FF9AA2", link: "https://www.cctv.com/", text: "央视网", desc: "" },
+            { color: "#eeebab", link: "https://nexusfilmx.com/search", text: "Nexus", desc: "" },
             { color: "#beeef0", link: "https://www.ncat21.com/", text: "网飞猫", desc: "" },
             { color: "#bef0d2", link: "https://www.omofuna.com/", text: "Omofun动漫", desc: "" },
-            { color: "#eeebab", link: "", text: "", desc: "" },
+            
             { color: "#FFB7B2", link: "https://www.unrealengine.com/", text: "UE5", desc: "电影级实时 3D 引擎" },
             { color: "#FFDAC1", link: "https://unity.com/", text: "Unity", desc: "跨平台游戏开发引擎" },
             { color: "#E2F0CB", link: "https://lumalabs.ai/dream-machine", text: "Luma", desc: "快速 3D 场景建模" },
@@ -324,6 +339,22 @@
             { color: "#c1c1c1", link: "https://dmoonshine666.github.io/TV-online/", text: "网络电视频道", desc: "" },
         ];
 
+        const recommenBlockConfig = [
+            { color: "#a5e5ff", link: "https://filee.sh/zh-cn/", text: "Filee", desc: "本地免费文件转换器" },
+            { color: "#C7CEEA", link: "https://my.feishu.cn/wiki/Kn4bwpgWPi75pFkdtFbc7TSjnFh", text: "Lala罐头", desc: "教程汇总" },
+            { color: "#c9bff0", link: "https://qing-wei-jing.github.io/career-share/shares/", text: "行业指南", desc: "工作内幕分享" },
+            { color: "#FF9AA2", link: "https://github.com/xuaa1/srt-whiteboard-animation", text: "白板动画", desc: "暖米黄纸张底" },
+            { color: "#beeef0", link: "https://github.com/geeklee/srt-whiteboard-animation", text: "白板动画", desc: "按叙事顺序绘制的视频" },
+            { color: "#bef0d2", link: "https://github.com/yang0/handraw-style", text: "handraw-style", desc: "手绘与排版" },
+            { color: "#eeebab", link: "https://github.com/img2threejs/img2threejs", text: "img2threejs", desc: "图片转3D模型" },
+            { color: "#FFB7B2", link: "https://github.com/ZzzLc0405/photo-abstract-editorial", text: "视觉设计", desc: "生活图片变极简抽象风" },
+            { color: "#FFDAC1", link: "https://github.com/Zeejay0/gathered-scenes-zine-skill", text: "", desc: "实景拼贴风" },
+            { color: "#E2F0CB", link: "https://github.com/firecrawl/anydoc", text: "anydoc", desc: "将文档转化成md" },
+            { color: "#B5EAD7", link: "", text: "", desc: "" },
+            { color: "#F6EAC2", link: "", text: "", desc: "" },
+            
+        ];
+
         const contentData = {
             "llm-base": llmBaseConfig,
             "image-gen": imageBlockConfig,
@@ -332,7 +363,8 @@
             "scene-studio": sceneBlockConfig,
             "audio-time": audioBlockConfig,
             "book-garden": bookBlockConfig,
-            "vibe-coding":vibeBlockConfig
+            "vibe-coding":vibeBlockConfig,
+            "recommen-dation":recommenBlockConfig
         };
 
         function createBlocksHTML(configList) {
